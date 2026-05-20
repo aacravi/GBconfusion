@@ -12,3 +12,55 @@ The following settings can be modified if needed:
 
 During the pre-processing of the catalog (waveform generation step), there is the possibility to apply a pre-exclusion of weak sources, based on an approximate SNR calculation. This is done through the argument `snr_preselection` (default: 0.01). It is recommended to use a pre-selection SNR not higher than 0.01, to avoid excluding possibly resolvable sources. Pre-excluded sources will be skipped during the waveform generation, and their contribution to the noise automatically added to the PSD.
 
+## Installation
+
+Run 
+
+```
+pip install GBconfusion
+```
+
+## Usage
+
+**Step 1:** Pre-process binary catalog
+
+```
+python preprocess_catalog.py  --catalog_filepath  --output_filepath  --T_obs  --delta_t  --tdi  --snr_preselection  --batch_size  --keys
+```
+
+**Step 2:** Load the processed data
+
+```
+from GBconfusion import load_waveforms
+
+data = load_waveform(output_filepath)
+```
+
+**Step 3:** Setup the data for the iteration and run it
+
+```
+from GBconfusion import setup, run_iterative_separation
+from GBconfusion.snr import optimal_snr_AE
+from GBconfusion.lisa_psd import noise_psd_AE
+
+snr_threshold = 7
+tdi = 2.0
+T_obs = data['T_obs']
+filter_size = 2000
+max_iterations = 50
+results_filename = 'results_filename'
+
+state = setup(data, snr_calculator = lambda source:optimal_snr_AE(source["A"], source["E"], source["psd_total"], T_obs=T_obs), 
+              psd_instrumental=noise_psd_AE, 
+              snr_threshold=snr_threshold,
+              tdi = tdi,
+              filter_size=filter_size)
+
+results = run_iterative_separation(state,
+                                   max_iterations=max_iterations, 
+                                   filter_size=filter_size, 
+                                   print_progress=True, 
+                                   plot= False, 
+                                   save_results=False, 
+                                   output_file= results_filename)
+```
