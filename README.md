@@ -9,6 +9,7 @@ The following settings can be modified if needed:
 - SNR threshold (default: 7)
 - Median filter size for PSD smoothing (default: 2000)
 - Instrumental noise (default: TDI A/E channel)
+- Distance cut (default: None)
 
 During the pre-processing of the catalog (waveform generation step), there is the possibility to apply a pre-exclusion of weak sources, based on an approximate SNR calculation. This is done through the argument `snr_preselection` (default: 0.01). It is recommended to use a pre-selection SNR not higher than 0.01, to avoid excluding possibly resolvable sources. Pre-excluded sources will be skipped during the waveform generation, and their contribution to the noise automatically added to the PSD.
 
@@ -33,7 +34,7 @@ python -m GBconfusion.preprocess_catalog  --catalog_filepath  --output_filepath 
 ```
 from GBconfusion import load_waveforms
 
-data = load_waveform(output_filepath)
+data = load_waveform(output_filepath, distance_cut=None)
 ```
 
 **Step 3:** Setup the data for the iteration and run it
