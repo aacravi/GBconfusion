@@ -25,7 +25,7 @@ pip install GBconfusion
 **Step 1:** Pre-process binary catalog
 
 ```
-python preprocess_catalog.py  --catalog_filepath  --output_filepath  --T_obs  --delta_t  --tdi  --snr_preselection  --batch_size  --keys
+python -m GBconfusion.preprocess_catalog  --catalog_filepath  --output_filepath  --T_obs  --delta_t  --tdi  --snr_preselection  --batch_size  --keys
 ```
 
 **Step 2:** Load the processed data
