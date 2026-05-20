@@ -1,0 +1,53 @@
+# preprocess_catalog.py
+import h5py
+from astropy.coordinates import SkyCoord, GeocentricTrueEcliptic
+from galconfusion.catalog_handling_compositions import process_catalog_batches
+import gc
+import argparse
+
+def preprocess_catalog(filepath, output_filename,
+                       keys=None, T_obs=4*365*24*3600,
+                       delta_t=5, tdi=1.5, snr_preselection=0.01,
+                       batch_size=1000):
+    """
+    Load the catalog, convert coordinates, and process waveforms.
+    Saves the waveforms to `output_filename`.
+    """
+    print("Loading catalog...")
+    if keys is None:
+        keys = ["Frequency", "FrequencyDerivative",
+                "Amplitude", "EquatorialLatitude", "EquatorialLongitude", "Polarization",
+                "InitialPhase",  "Inclination", "LuminosityDistance"] #, "SecondaryMassSSBFrame", "PrimaryMassSSBFrame", "TotalMassSSBFrame"]
+
+    # Load catalog
+    with h5py.File(filepath, "r") as f:
+        param_binaries = {name: f[name][:] for name in keys}
+
+    # Coordinate conversion
+    ra = param_binaries.pop("EquatorialLongitude")
+    dec = param_binaries.pop("EquatorialLatitude")
+    c = SkyCoord(ra=ra, dec=dec, unit='rad', frame='icrs')
+    ecl = c.transform_to(GeocentricTrueEcliptic())
+    param_binaries["EclipticLongitude"] = ecl.lon.rad
+    param_binaries["EclipticLatitude"] = ecl.lat.rad
+
+    # Clean memory
+    del c, ecl, ra, dec
+    gc.collect()
+
+    print("Processing catalog...")
+    # Process catalog in batches batches
+    process_catalog_batches(param_binaries,
+                            T_obs=T_obs,
+                            delta_t=delta_t,
+                            tdi=tdi,
+                            batch_size=batch_size,
+                            snr_preselection=snr_preselection,
+                            output_file=output_filename,
+                            verbose=True)
+
+    # Clean memory
+    del param_binaries
+    gc.collect()
+    print(f"Catalog pre-processing done. Output saved to {output_filename}")
+

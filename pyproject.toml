@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "galconfusion"
+version = "0.1.0"
+description = "Tools for galactic confusion estimation with LISA"
+authors = [{name = "Alice Cravioglio", email = "acravioglio@gmail.com"}]
+readme = "README.md"
+requires-python = ">=3.9"
+
+dependencies = [
+    "numpy",
+    "scipy",
+    "astropy",
+    "matplotlib",
+    "fastgb",
+    "pycbc",
+    "h5py",
+    "argparse",
+    "lisaorbits",
+    "pandas",
+    "pathlib",
+    "tqdm"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
