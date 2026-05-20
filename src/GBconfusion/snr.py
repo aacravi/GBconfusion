@@ -97,7 +97,7 @@ def optimal_snr(signal, power_spectral_density, T_obs, **kwargs):
         signal=signal, power_spectral_density=power_spectral_density,
         duration=T_obs).real)**0.5
 
-from galconfusion.lisa_psd import S_noise_approx
+from GBconfusion.lisa_psd import S_noise_approx
 def approx_snr(h_c , f):
     S_noise = S_noise_approx(f)
     SNR = h_c /(f* S_noise)**(1/2)

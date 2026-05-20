@@ -1,7 +1,7 @@
 # preprocess_catalog.py
 import h5py
 from astropy.coordinates import SkyCoord, GeocentricTrueEcliptic
-from galconfusion.catalog_handling_compositions import process_catalog_batches
+from GBconfusion.catalog_handling_compositions import process_catalog_batches
 import gc
 import argparse
 

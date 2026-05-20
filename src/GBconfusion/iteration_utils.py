@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from galconfusion.lisa_psd import noise_psd_AE, noise_psd_AE_gal2
+from GBconfusion.lisa_psd import noise_psd_AE, noise_psd_AE_gal2
 import scipy.constants as constants
-from galconfusion.snr import optimal_snr
+from GBconfusion.snr import optimal_snr
 import h5py
 from scipy import ndimage
 from pathlib import Path

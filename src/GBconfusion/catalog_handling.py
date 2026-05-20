@@ -1,8 +1,8 @@
 import numpy as np
 import h5py
-from galconfusion.snr import approx_snr
-from galconfusion.lisa_psd import psd_source_approx
-from galconfusion.lisa_response_fastGB import  tdi_AE_fastGB_multi
+from GBconfusion.snr import approx_snr
+from GBconfusion.lisa_psd import psd_source_approx
+from GBconfusion.lisa_response_fastGB import  tdi_AE_fastGB_multi
 from scipy.constants import c
 from tqdm import tqdm
 import gc
@@ -54,6 +54,7 @@ def process_catalog_batches(catalog, T_obs, delta_t, tdi,  batch_size, output_fi
         meta_ampl = meta.create_dataset('Ampl', shape=(n_tot,), dtype='float64')
         meta_dist = meta.create_dataset('lum_dist', shape=(n_tot,), dtype='float64')
         
+
         psd_est = f.create_dataset('source_psd_estimate', shape=(n_tot,), dtype='float64')
 
         for bname, N in bucket_items:
@@ -77,23 +78,24 @@ def process_catalog_batches(catalog, T_obs, delta_t, tdi,  batch_size, output_fi
             current_batch_size = end_idx - start_idx
             
             # Extract this batch from the full catalog
+            # Assign random phases phi0
+            phi0 = np.random.uniform(0, 2*np.pi, current_batch_size)
 
             batch_params = np.column_stack([
-                catalog['Frequency'][start_idx:end_idx][:, 0],
-                catalog['FrequencyDerivative'][start_idx:end_idx][:, 0],
-                catalog['Amplitude'][start_idx:end_idx][:, 0],
-                catalog['EclipticLatitude'][start_idx:end_idx][:, 0],
-                catalog['EclipticLongitude'][start_idx:end_idx][:, 0],
-                catalog['Polarization'][start_idx:end_idx][:, 0],
-                catalog['Inclination'][start_idx:end_idx][:, 0],
-                catalog['InitialPhase'][start_idx:end_idx][:, 0]
-                
+                catalog['GW22FrequencySourceFrame'][start_idx:end_idx],
+                catalog['GW22FrequencyDerivativeSourceFrame'][start_idx:end_idx],
+                catalog['Amplitude'][start_idx:end_idx],
+                catalog['EclipticLatitude'][start_idx:end_idx],
+                catalog['EclipticLongitude'][start_idx:end_idx],
+                catalog['PolarisationAngle'][start_idx:end_idx],
+                catalog['InclinationAngle'][start_idx:end_idx],
+                phi0
             ])
             
             meta_f0[start_idx:end_idx] = batch_params[:, 0]
             meta_fdot[start_idx:end_idx] = batch_params[:, 1]
             meta_ampl[start_idx:end_idx] = batch_params[:, 2]
-            meta_dist[start_idx:end_idx] = catalog['LuminosityDistance'][start_idx:end_idx][:, 0]
+            meta_dist[start_idx:end_idx] = catalog['LuminosityDistance'][start_idx:end_idx]
             
             # Rough estimation of the SNR of sources to avoid computing the waveform of already weak sources
             # For weak sources, compute the estimated PSD and store it (it will contribute to the background)

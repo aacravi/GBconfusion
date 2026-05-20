@@ -1,5 +1,5 @@
 import argparse
-from galconfusion.preprocess_catalog_tools import preprocess_catalog
+from GBconfusion.preprocess_catalog_tools import preprocess_catalog
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Preprocess LISA binary catalog")

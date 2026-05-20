@@ -135,7 +135,7 @@ def noise_psd_AE_gal2(f, T_obs, tdi, L= 2.5e9/constants.c,  **kwargs):
     
     return noise_psd_AE(f, tdi, L) + 1.5*S_gal_response(f, tdi, L)* S_gal2(f, T_obs, L)
 
-from galconfusion.sgwb_Boileau import sgwb_noise_boileau
+from GBconfusion.sgwb_Boileau import sgwb_noise_boileau
 from pycbc.psd.analytical_space import averaged_response_lisa_tdi
 
 def noise_psd_AE_Boileau(f,  tdi, model, **kwargs):
