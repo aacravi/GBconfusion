@@ -40,8 +40,8 @@ data = load_waveform(output_filepath)
 
 ```
 from GBconfusion import setup, run_iterative_separation
-from GBconfusion.snr import optimal_snr_AE
-from GBconfusion.lisa_psd import noise_psd_AE
+from GBconfusion import optimal_snr_AE
+from GBconfusion import noise_psd_AE
 
 snr_threshold = 7
 tdi = 2.0
@@ -63,4 +63,12 @@ results = run_iterative_separation(state,
                                    plot= False, 
                                    save_results=False, 
                                    output_file= results_filename)
+```
+**Step 4:** Load the results
+
+```
+from GBconfusion.load_run import load_run
+
+run = load_run(results_filepath)
+resolved_sources = run["data"]["resolved_table"] 
 ```
